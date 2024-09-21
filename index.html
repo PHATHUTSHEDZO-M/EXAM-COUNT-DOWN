@@ -38,90 +38,39 @@
             color: #ffd700;
             font-weight: bold;
         }
-        #timer {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .time-block {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 1.2rem;
-            border-radius: 15px;
-            min-width: 100px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        .time-block:hover {
-            transform: translateY(-5px);
-        }
-        .time-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffd700;
-        }
-        .time-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        #exam-details {
-            margin-top: 2rem;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-        }
-        #all-exams {
-            margin-top: 2rem;
-            text-align: left;
-        }
         .exam-item {
             background: rgba(255, 255, 255, 0.1);
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
+            text-align: left;
         }
         .exam-item h3 {
             margin: 0 0 0.5rem 0;
             color: #ffd700;
         }
-        .exam-countdown {
+        .countdown {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1rem;
+        }
+        .countdown-item {
+            text-align: center;
+        }
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .countdown-label {
             font-size: 0.8rem;
-            margin-right: 1rem;
-            min-width: 120px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Exam Countdown</h1>
-        <div id="countdown">
-            <h2 id="exam-name"></h2>
-            <div id="timer">
-                <div class="time-block">
-                    <div id="days" class="time-value">00</div>
-                    <div class="time-label">Days</div>
-                </div>
-                <div class="time-block">
-                    <div id="hours" class="time-value">00</div>
-                    <div class="time-label">Hours</div>
-                </div>
-                <div class="time-block">
-                    <div id="minutes" class="time-value">00</div>
-                    <div class="time-label">Minutes</div>
-                </div>
-                <div class="time-block">
-                    <div id="seconds" class="time-value">00</div>
-                    <div class="time-label">Seconds</div>
-                </div>
-            </div>
-            <div id="exam-details"></div>
-        </div>
-        <div id="all-exams"></div>
+        <div id="exams-list"></div>
     </div>
 
     <script>
@@ -139,35 +88,44 @@
         // Sort exams by date
         exams.sort((a, b) => a.date - b.date);
 
-        function updateCountdown() {
-            const now = new Date();
-            const closestExam = exams.find(exam => exam.date > now);
-
-            if (closestExam) {
-                const diff = closestExam.date - now;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                document.getElementById('exam-name').textContent = `${closestExam.code} - ${closestExam.name}`;
-                document.getElementById('days').textContent = days.toString().padStart(2, '0');
-                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-                document.getElementById('exam-details').innerHTML = `
-                    <strong>Date:</strong> ${closestExam.date.toLocaleDateString()}<br>
-                    <strong>Time:</strong> ${closestExam.date.toLocaleTimeString()}<br>
-                    <strong>Venue:</strong> ${closestExam.venue}
-                `;
-            } else {
-                document.getElementById('countdown').innerHTML = "<h2>All exams have passed!</h2>";
-            }
-
-            updateAllExamsCountdown();
+        function createExamElement(exam, index) {
+            const examElement = document.createElement('div');
+            examElement.className = 'exam-item';
+            examElement.innerHTML = `
+                <h3>${exam.code} - ${exam.name}</h3>
+                <div class="countdown" id="countdown-${index}">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="days-${index}">00</div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="hours-${index}">00</div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="minutes-${index}">00</div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="seconds-${index}">00</div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+                <p><strong>Date:</strong> ${exam.date.toLocaleDateString()}</p>
+                <p><strong>Time:</strong> ${exam.date.toLocaleTimeString()}</p>
+                <p><strong>Venue:</strong> ${exam.venue}</p>
+            `;
+            return examElement;
         }
 
-        function updateAllExamsCountdown() {
+        function displayExams() {
+            const examsListContainer = document.getElementById('exams-list');
+            exams.forEach((exam, index) => {
+                examsListContainer.appendChild(createExamElement(exam, index));
+            });
+        }
+
+        function updateCountdowns() {
             const now = new Date();
             exams.forEach((exam, index) => {
                 const diff = exam.date - now;
@@ -175,20 +133,21 @@
                     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const countdownElement = document.getElementById(`exam-countdown-${index}`);
-                    if (countdownElement) {
-                        countdownElement.textContent = `${days}d ${hours}h ${minutes}m`;
-                    }
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    document.getElementById(`days-${index}`).textContent = days.toString().padStart(2, '0');
+                    document.getElementById(`hours-${index}`).textContent = hours.toString().padStart(2, '0');
+                    document.getElementById(`minutes-${index}`).textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById(`seconds-${index}`).textContent = seconds.toString().padStart(2, '0');
+                } else {
+                    document.getElementById(`countdown-${index}`).innerHTML = "<p>Exam has passed</p>";
                 }
             });
         }
 
-        function displayAllExams() {
-            const allExamsContainer = document.getElementById('all-exams');
-            allExamsContainer.innerHTML = '<h2>All Exams</h2>';
-            
-            exams.forEach((exam, index) => {
-                const examElement = document.createElement('div');
-                examElement.className = 'exam-item';
-                examElement.innerHTML = `
-                    
+        displayExams();
+        setInterval(updateCountdowns, 1000);
+        updateCountdowns(); // Initial call
+    </script>
+</body>
+</html>
