@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -5,76 +6,117 @@
     <title>Exam Countdown</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
         }
         .container {
             text-align: center;
-            padding: 20px;
-        }
-        .exam {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
-            color: #333;
+            margin-bottom: 1rem;
         }
-        .countdown {
-            font-size: 24px;
+        #exam-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        #timer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .time-block {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            min-width: 80px;
+        }
+        .time-value {
+            font-size: 2rem;
             font-weight: bold;
-            color: #007bff;
+        }
+        .time-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Exam Countdown</h1>
-        <div id="examList"></div>
+        <div id="countdown">
+            <h2 id="exam-name"></h2>
+            <div id="timer">
+                <div class="time-block">
+                    <div id="days" class="time-value">00</div>
+                    <div class="time-label">Days</div>
+                </div>
+                <div class="time-block">
+                    <div id="hours" class="time-value">00</div>
+                    <div class="time-label">Hours</div>
+                </div>
+                <div class="time-block">
+                    <div id="minutes" class="time-value">00</div>
+                    <div class="time-label">Minutes</div>
+                </div>
+                <div class="time-block">
+                    <div id="seconds" class="time-value">00</div>
+                    <div class="time-label">Seconds</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const exams = [
-            { name: "ELEN3000A", date: "2024-11-18" },
-            { name: "ELEN3007A", date: "2024-11-14" },
-            { name: "ELEN3009A", date: "2024-11-07" },
-            { name: "ELEN3013A", date: "2024-11-11" },
-            { name: "ELEN3014A", date: "2024-11-15" },
-            { name: "ELEN3016A", date: "2024-10-30" },
-            { name: "ELEN3024A", date: "2024-11-22" },
-            { name: "ELEN3026A", date: "2024-11-06" }
+            { name: "Math Exam", date: new Date("2024-10-15") },
+            { name: "Science Exam", date: new Date("2024-11-05") },
+            { name: "History Exam", date: new Date("2024-12-20") }
         ];
 
-        function updateCountdowns() {
-            const examList = document.getElementById('examList');
-            examList.innerHTML = '';
+        function updateCountdown() {
+            const now = new Date();
+            let closestExam = null;
+            let smallestDiff = Infinity;
 
             exams.forEach(exam => {
-                const examDate = new Date(exam.date);
-                const now = new Date();
-                const diff = examDate - now;
-                const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-
-                const examElement = document.createElement('div');
-                examElement.className = 'exam';
-                examElement.innerHTML = `
-                    <h2>${exam.name}</h2>
-                    <p>Date: ${exam.date}</p>
-                    <p class="countdown">${days} days remaining</p>
-                `;
-                examList.appendChild(examElement);
+                const diff = exam.date - now;
+                if (diff > 0 && diff < smallestDiff) {
+                    smallestDiff = diff;
+                    closestExam = exam;
+                }
             });
+
+            if (closestExam) {
+                const diff = closestExam.date - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('exam-name').textContent = closestExam.name;
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            } else {
+                document.getElementById('countdown').innerHTML = "<h2>All exams have passed!</h2>";
+            }
         }
 
-        updateCountdowns();
-        setInterval(updateCountdowns, 86400000); // Update every 24 hours
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
     </script>
 </body>
 </html>
