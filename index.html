@@ -23,7 +23,7 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
         }
         h1 {
@@ -72,6 +72,20 @@
             padding: 1rem;
             border-radius: 10px;
         }
+        #all-exams {
+            margin-top: 2rem;
+            text-align: left;
+        }
+        .exam-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        .exam-item h3 {
+            margin: 0 0 0.5rem 0;
+            color: #ffd700;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +113,7 @@
             </div>
             <div id="exam-details"></div>
         </div>
+        <div id="all-exams"></div>
     </div>
 
     <script>
@@ -142,8 +157,26 @@
             }
         }
 
+        function displayAllExams() {
+            const allExamsContainer = document.getElementById('all-exams');
+            allExamsContainer.innerHTML = '<h2>All Exams</h2>';
+            
+            exams.forEach(exam => {
+                const examElement = document.createElement('div');
+                examElement.className = 'exam-item';
+                examElement.innerHTML = `
+                    <h3>${exam.code} - ${exam.name}</h3>
+                    <p><strong>Date:</strong> ${exam.date.toLocaleDateString()}</p>
+                    <p><strong>Time:</strong> ${exam.date.toLocaleTimeString()}</p>
+                    <p><strong>Venue:</strong> ${exam.venue}</p>
+                `;
+                allExamsContainer.appendChild(examElement);
+            });
+        }
+
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Initial call
+        displayAllExams(); // Display all exams
     </script>
 </body>
 </html>
