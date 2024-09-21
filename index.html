@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -81,10 +82,17 @@
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
         }
         .exam-item h3 {
             margin: 0 0 0.5rem 0;
             color: #ffd700;
+        }
+        .exam-countdown {
+            font-size: 0.8rem;
+            margin-right: 1rem;
+            min-width: 120px;
         }
     </style>
 </head>
@@ -155,28 +163,32 @@
             } else {
                 document.getElementById('countdown').innerHTML = "<h2>All exams have passed!</h2>";
             }
+
+            updateAllExamsCountdown();
+        }
+
+        function updateAllExamsCountdown() {
+            const now = new Date();
+            exams.forEach((exam, index) => {
+                const diff = exam.date - now;
+                if (diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const countdownElement = document.getElementById(`exam-countdown-${index}`);
+                    if (countdownElement) {
+                        countdownElement.textContent = `${days}d ${hours}h ${minutes}m`;
+                    }
+                }
+            });
         }
 
         function displayAllExams() {
             const allExamsContainer = document.getElementById('all-exams');
             allExamsContainer.innerHTML = '<h2>All Exams</h2>';
             
-            exams.forEach(exam => {
+            exams.forEach((exam, index) => {
                 const examElement = document.createElement('div');
                 examElement.className = 'exam-item';
                 examElement.innerHTML = `
-                    <h3>${exam.code} - ${exam.name}</h3>
-                    <p><strong>Date:</strong> ${exam.date.toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${exam.date.toLocaleTimeString()}</p>
-                    <p><strong>Venue:</strong> ${exam.venue}</p>
-                `;
-                allExamsContainer.appendChild(examElement);
-            });
-        }
-
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initial call
-        displayAllExams(); // Display all exams
-    </script>
-</body>
-</html>
+                    
