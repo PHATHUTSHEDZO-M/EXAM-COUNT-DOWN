@@ -4,87 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Countdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: url('https://images.unsplash.com/photo-1476231682828-37e571bc172f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
             padding: 20px;
         }
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.85);
             padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            max-width: 800px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
             width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         h1 {
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        #exam-name {
-            font-size: 1.8rem;
             margin-bottom: 1.5rem;
-            color: #ffd700;
-            font-weight: bold;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-family: 'Montserrat', sans-serif;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .header-info {
+            background: rgba(46, 125, 50, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #2e7d32;
         }
         .exam-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
+            background: white;
+            padding: 1.2rem;
+            border-radius: 8px;
             margin-bottom: 1rem;
             text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #388e3c;
+            transition: transform 0.2s;
+        }
+        .exam-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
         .exam-item h3 {
             margin: 0 0 0.5rem 0;
-            color: #ffd700;
+            color: #2e7d32;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
         }
         .countdown {
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 1rem;
+            justify-content: space-between;
+            margin: 1rem 0;
+            max-width: 400px;
         }
         .countdown-item {
             text-align: center;
+            background: rgba(56, 142, 60, 0.1);
+            padding: 0.5rem;
+            border-radius: 5px;
+            min-width: 70px;
         }
         .countdown-value {
             font-size: 1.5rem;
             font-weight: bold;
+            color: #1b5e20;
         }
         .countdown-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
+            color: #2e7d32;
+        }
+        .exam-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .exam-detail {
+            background: rgba(56, 142, 60, 0.05);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .passed {
+            opacity: 0.7;
+            border-left-color: #757575;
+        }
+        .passed h3 {
+            color: #757575;
+        }
+        .passed .countdown-value {
+            color: #757575;
+        }
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Exam Countdown</h1>
+        
+        <div class="header-info">
+            <h2>University of the Witwatersrand, Johannesburg</h2>
+            <p>June 2025 Examination Session</p>
+        </div>
+        
         <div id="exams-list"></div>
+        
+        <div class="footer">
+            Good luck with your exams! Remember to check your official timetable for any updates.
+        </div>
     </div>
 
     <script>
         const exams = [
-            { code: "ELEN3000A/1", name: "ELECTROMAGNETIC ENGINEERING", date: new Date("2024-11-18T14:00:00"), venue: "BOZZOLI (101)" },
-            { code: "ELEN3007A/1", name: "PROBABILISTIC SYSTEM AND SIGNAL ANALYSIS", date: new Date("2024-11-14T09:00:00"), venue: "OLD MUTUAL MULTIPURPOSE SPORTS HALL (154)" },
-            { code: "ELEN3009A/1", name: "SOFTWARE DEVELOPMENT II", date: new Date("2024-11-07T09:00:00"), venue: "HALL 29 - BALCONY (182)" },
-            { code: "ELEN3013A/1", name: "SIGNALS AND SYSTEMS IIB", date: new Date("2024-11-11T09:00:00"), venue: "SEE DEPARTMENTAL NOTICE." },
-            { code: "ELEN3016A/1", name: "CONTROL I", date: new Date("2024-10-30T09:00:00"), venue: "ROBERT SOBUKWE - EXAMS HALL (169)" },
-            { code: "ELEN3009A/1", name: "SOFTWARE PROJECT", date: new Date("2024-09-27T16:30:00"), venue: "ROBERT SOBUKWE - EXAMS HALL (169)" },
-            { code: "ELEN3018A/1", name: "ECONOMICS PROJECT", date: new Date("2024-10-04T08:00:00"), venue: "VIDEO  (169)" },
-            { code: "ELEN3018A/1", name: "ECONOMICS TEST ", date: new Date("2024-10-07T08:00:00"), venue: "TEST (169)" },
-            { code: "ELEN3009A/1", name: "SOFTWARE PROJECT", date: new Date("2024-10-10T09:00:00"), venue: "FINAL SUBMISSION (169)" },
-            { code: "ELEN3013A/1", name: "SIGNALS AND SYSTEMS IIB", date: new Date("2024-10-14T08:00:00"), venue: "SEE DEPARTMENTAL NOTICE." },
+            { code: "ELEN4019A/1", name: "Select Topics in Sociology", date: new Date("2025-06-04T09:00:00"), venue: "FNB - Ground Floor", duration: "01:00" },
+            { code: "ELEN4023A/1", name: "Renewable Energy", date: new Date("2025-06-06T14:00:00"), venue: "FNB - Basement Annex", duration: "03:00" },
+            { code: "ELEN4006A/1", name: "Measurement Systems", date: new Date("2025-06-09T09:00:00"), venue: "Old Mutual Multipurpose Sports Hall", duration: "03:00" },
+            { code: "ELEN4018A/1", name: "Power Systems", date: new Date("2025-06-11T14:00:00"), venue: "Robert Sobukwe - 228", duration: "03:00" },
+            { code: "ELEN3012A/1", name: "Signals and Systems IIA", date: new Date("2025-06-13T14:00:00"), venue: "Robert Sobukwe - 228", duration: "03:00" },
+            { code: "MECN4020A/1", name: "Systems Management & Int", date: new Date("2025-06-17T09:00:00"), venue: "Hall 29 - Balcony", duration: "02:00", notes: "MCQ and Written Exam. Basic scientific calculator allowed" },
+            { code: "ELEN4003A/1", name: "High Voltage Engineering", date: new Date("2025-06-20T14:00:00"), venue: "Flower Hall - Ground Floor", duration: "03:00" },
+            { code: "ELEN4001A/1", name: "High Frequency Techniques", date: new Date("2025-06-26T09:00:00"), venue: "Old Mutual Multipurpose Sports Hall", duration: "02:00" }
         ];
 
         // Sort exams by date
@@ -93,6 +148,10 @@
         function createExamElement(exam, index) {
             const examElement = document.createElement('div');
             examElement.className = 'exam-item';
+            if (new Date() > exam.date) {
+                examElement.classList.add('passed');
+            }
+            
             examElement.innerHTML = `
                 <h3>${exam.code} - ${exam.name}</h3>
                 <div class="countdown" id="countdown-${index}">
@@ -113,9 +172,13 @@
                         <div class="countdown-label">Seconds</div>
                     </div>
                 </div>
-                <p><strong>Date:</strong> ${exam.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${exam.date.toLocaleTimeString()}</p>
-                <p><strong>Venue:</strong> ${exam.venue}</p>
+                <div class="exam-details">
+                    <div class="exam-detail"><strong>Date:</strong> ${exam.date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                    <div class="exam-detail"><strong>Time:</strong> ${exam.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</div>
+                    <div class="exam-detail"><strong>Duration:</strong> ${exam.duration}</div>
+                    <div class="exam-detail"><strong>Venue:</strong> ${exam.venue}</div>
+                    ${exam.notes ? `<div class="exam-detail"><strong>Notes:</strong> ${exam.notes}</div>` : ''}
+                </div>
             `;
             return examElement;
         }
@@ -142,7 +205,7 @@
                     document.getElementById(`minutes-${index}`).textContent = minutes.toString().padStart(2, '0');
                     document.getElementById(`seconds-${index}`).textContent = seconds.toString().padStart(2, '0');
                 } else {
-                    document.getElementById(`countdown-${index}`).innerHTML = "<p>Exam has passed</p>";
+                    document.getElementById(`countdown-${index}`).innerHTML = '<div style="padding: 0.5rem; background: rgba(117, 117, 117, 0.1); border-radius: 4px;">Exam completed</div>';
                 }
             });
         }
